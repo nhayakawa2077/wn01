@@ -2,650 +2,267 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <title>WN-01R // Noise Forge</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>WN-01 Noise Unit</title>
   <style>
-    :root {
-      color-scheme: dark;
-      --bg-deep: #02040a;
-      --bg-panel: #050810;
-      --bg-slab: #070b13;
-      --steel: #4b5563;
-      --accent-cyan: #22d3ee;
-      --accent-amber: #f59e0b;
-      --accent-red: #f97316;
-      --accent-line: #94a3b8;
-      --text-main: #e5e7eb;
-      --text-dim: #9ca3af;
-      --warning: #fbbf24;
+    * {
+      box-sizing: border-box;
     }
-    * { box-sizing: border-box; }
-
     body {
       margin: 0;
-      padding: 14px;
-      min-height: 100vh;
-      background:
-        radial-gradient(circle at 10% 0, #111827 0, transparent 50%),
-        radial-gradient(circle at 100% 0, #0f172a 0, transparent 55%),
-        radial-gradient(circle at 50% 120%, #020617 0, #000 65%);
-      color: var(--text-main);
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #050608;
       display: flex;
-      align-items: center;
       justify-content: center;
-    }
-
-    .chassis {
-      width: 100%;
-      max-width: 420px;
-      padding: 14px 14px 18px;
-      border-radius: 18px;
-      background:
-        linear-gradient(145deg, #020617, #020617 30%, #02040a 80%);
-      box-shadow:
-        0 26px 60px rgba(0,0,0,0.95),
-        0 0 0 1px rgba(15,23,42,0.95),
-        0 0 0 1px inset rgba(15,23,42,0.9);
-      position: relative;
+      align-items: center;
+      height: 100vh;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #e5e7eb;
       overflow: hidden;
     }
-
-    .chassis::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background:
-        repeating-linear-gradient(
-          135deg,
-          rgba(148,163,184,0.12) 0,
-          rgba(148,163,184,0.12) 1px,
-          transparent 1px,
-          transparent 4px
-        );
-      mix-blend-mode: soft-light;
-      opacity: 0.45;
-      pointer-events: none;
+    #panel {
+      max-width: 100%;
+      height: auto;
+      display: block;
     }
-
-    .chassis::after {
-      content: "NOISE   FABRICATION   UNIT";
-      position: absolute;
-      right: 14px;
-      bottom: 10px;
-      font-size: 8px;
-      letter-spacing: 0.24em;
-      text-transform: uppercase;
-      color: rgba(148,163,184,0.35);
-    }
-
-    .top-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 10px;
-      position: relative;
-      z-index: 1;
-    }
-
-    .brand-block {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .id-line {
+    .hint {
+      position: fixed;
+      bottom: 8px;
+      left: 50%;
+      transform: translateX(-50%);
       font-size: 11px;
-      letter-spacing: 0.24em;
-      text-transform: uppercase;
-      color: var(--text-dim);
-    }
-
-    .unit-name {
-      font-size: 18px;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      margin-top: 2px;
-    }
-
-    .unit-name span.code {
-      color: var(--accent-cyan);
-    }
-
-    .small-tag {
-      font-size: 9px;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: rgba(148,163,184,0.9);
-      padding: 2px 8px;
-      border-radius: 999px;
-      border: 1px solid rgba(148,163,184,0.6);
-      background: radial-gradient(circle at 0 0, #0f172a 0, transparent 55%);
-    }
-
-    .stamp {
-      font-size: 9px;
-      text-align: right;
-      color: var(--text-dim);
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-    }
-
-    .stamp strong {
-      color: var(--accent-amber);
-    }
-
-    .panel-main {
-      position: relative;
-      z-index: 1;
-      margin-top: 8px;
-      padding: 14px 12px 14px;
-      border-radius: 14px;
-      background:
-        linear-gradient(135deg, #020617, #020617 40%, #050816 100%);
-      box-shadow:
-        inset 0 0 0 1px rgba(15,23,42,0.9),
-        0 16px 36px rgba(0,0,0,0.95);
-    }
-
-    .panel-main::before {
-      content: "";
-      position: absolute;
-      inset: 10px 9px;
-      border-radius: 10px;
-      border: 1px solid rgba(75,85,99,0.85);
-      box-shadow:
-        0 0 0 1px rgba(15,23,42,0.9),
-        inset 0 0 18px rgba(15,23,42,0.9);
+      color: #6b7280;
+      letter-spacing: 0.12em;
+      white-space: nowrap;
       pointer-events: none;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: minmax(0,1.4fr);
-      gap: 10px;
-      position: relative;
-      z-index: 1;
-    }
-
-    .block {
-      padding: 10px 10px 9px;
-      border-radius: 10px;
-      background:
-        linear-gradient(145deg, #020617, #020617 60%, #050815 100%);
-      box-shadow:
-        0 0 0 1px rgba(30,64,175,0.65),
-        inset 0 0 0 1px rgba(15,23,42,0.9),
-        0 10px 24px rgba(15,23,42,0.95);
-      position: relative;
-    }
-
-    .block-label {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      font-size: 10px;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: rgba(148,163,184,0.9);
-      margin-bottom: 6px;
-    }
-
-    .block-label span.right {
-      font-size: 9px;
-      color: rgba(148,163,184,0.75);
-    }
-
-    .btn {
-      width: 100%;
-      border-radius: 999px;
-      border: none;
-      padding: 11px 14px;
-      font-size: 12px;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      color: #020617;
-    }
-
-    .btn-main {
-      background:
-        radial-gradient(circle at 0 0, #38bdf8 0, #0f172a 55%);
-      box-shadow:
-        0 0 0 1px rgba(8,47,73,0.9),
-        0 12px 26px rgba(56,189,248,0.45);
-    }
-    .btn-main.active {
-      background:
-        radial-gradient(circle at 0 0, var(--accent-red) 0, #7f1d1d 58%);
-      box-shadow:
-        0 0 0 1px rgba(248,250,252,0.95),
-        0 16px 36px rgba(248,113,113,0.75);
-      color: #020617;
-    }
-
-    .btn-rec {
-      background:
-        radial-gradient(circle at 0 0, #f97316 0, #7c2d12 50%);
-      box-shadow:
-        0 0 0 1px rgba(248,250,252,0.9),
-        0 12px 26px rgba(248,171,84,0.7);
-      color: #020617;
-    }
-
-    .btn[disabled] {
-      opacity: 0.45;
-      box-shadow: none;
-    }
-
-    .btn:active:not([disabled]) {
-      transform: translateY(1px);
-      box-shadow:
-        0 0 0 1px rgba(15,23,42,0.95),
-        0 8px 18px rgba(15,23,42,0.9);
-    }
-
-    .btn-left {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .btn-right {
-      font-size: 10px;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      opacity: 0.85;
-    }
-
-    .led-ring {
-      width: 16px;
-      height: 16px;
-      border-radius: 999px;
-      border: 2px solid rgba(15,23,42,0.9);
-      background:
-        radial-gradient(circle at 30% 30%, #f9fafb, #9ca3af);
-      box-shadow:
-        0 0 0 1px rgba(15,23,42,1),
-        0 0 10px rgba(148,163,184,0.9);
-      position: relative;
-    }
-    .led-ring::after {
-      content: "";
-      position: absolute;
-      inset: 4px;
-      border-radius: inherit;
-      background: radial-gradient(circle at 50% 30%, #22d3ee, #0f172a);
-      opacity: 0;
-      box-shadow:
-        0 0 6px rgba(34,211,238,0.9),
-        0 0 18px rgba(34,211,238,0.7);
-      transition: opacity 120ms ease-out;
-    }
-    .led-ring.on::after {
-      opacity: 1;
-    }
-
-    .led-rec {
-      width: 11px;
-      height: 11px;
-      border-radius: 999px;
-      background: radial-gradient(circle at 30% 30%, #fee2e2, #b91c1c);
-      box-shadow:
-        0 0 0 1px rgba(15,23,42,1),
-        0 0 10px rgba(248,113,113,0.9);
-    }
-
-    .slider-block {
-      margin-top: 8px;
-      padding: 8px 9px 6px;
-      border-radius: 10px;
-      background:
-        linear-gradient(135deg, #020617, #020617 60%, #02040a 100%);
-      box-shadow:
-        inset 0 0 0 1px rgba(30,64,175,0.7),
-        0 8px 18px rgba(15,23,42,0.95);
-    }
-
-    .slider-label {
-      display: flex;
-      justify-content: space-between;
-      font-size: 10px;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      margin-bottom: 4px;
-      color: rgba(148,163,184,0.95);
-    }
-
-    .slider-value {
-      font-variant-numeric: tabular-nums;
-      color: var(--accent-cyan);
-    }
-
-    .slider {
-      -webkit-appearance: none;
-      width: 100%;
-      height: 18px;
-      background: transparent;
-    }
-    .slider:focus {
-      outline: none;
-    }
-    .slider::-webkit-slider-runnable-track {
-      height: 4px;
-      border-radius: 999px;
-      background:
-        linear-gradient(
-          90deg,
-          #020617 0,
-          #1d4ed8 30%,
-          #22d3ee 65%,
-          #0f172a 100%
-        );
-      box-shadow:
-        inset 0 0 0 1px rgba(15,23,42,1),
-        0 0 10px rgba(34,197,235,0.85);
-    }
-    .slider::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      margin-top: -7px;
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      background:
-        radial-gradient(circle at 30% 30%, #e5e7eb, #9ca3af);
-      box-shadow:
-        0 0 0 2px rgba(15,23,42,1),
-        0 6px 16px rgba(15,23,42,0.95);
-    }
-
-    .divider {
-      margin: 10px 1px 8px;
-      border-top: 1px solid rgba(148,163,184,0.35);
-      border-bottom: 1px solid rgba(15,23,42,0.95);
-      position: relative;
-    }
-    .divider::before {
-      content: "MAINTENANCE  /  ACCESS PORT";
-      position: absolute;
-      left: 0;
-      top: -8px;
-      font-size: 8px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      padding: 0 6px;
-      background: linear-gradient(145deg, #020617, #02040a);
-      color: rgba(148,163,184,0.6);
-    }
-
-    .status {
-      margin-top: 6px;
-      font-size: 10px;
-      color: var(--text-dim);
-      min-height: 32px;
-      line-height: 1.5;
-    }
-
-    .download {
-      margin-top: 6px;
-      font-size: 10px;
-      text-align: right;
-    }
-    .download a {
-      color: #7dd3fc;
-      text-decoration: none;
-      border-bottom: 1px dotted rgba(125,211,252,0.7);
-    }
-
-    .warning-strip {
-      margin-top: 6px;
-      padding: 4px 8px;
-      border-radius: 8px;
-      background:
-        repeating-linear-gradient(
-          135deg,
-          rgba(248,181,0,0.2) 0,
-          rgba(248,181,0,0.2) 8px,
-          transparent 8px,
-          transparent 16px
-        ),
-        linear-gradient(135deg, #020617, #020617 60%, #111827 100%);
-      border: 1px solid rgba(248,181,0,0.65);
-      font-size: 9px;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: rgba(252,211,77,0.95);
-      text-align: center;
-    }
-
-    .footer {
-      margin-top: 9px;
-      font-size: 9px;
-      text-align: center;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: rgba(148,163,184,0.7);
     }
   </style>
 </head>
 <body>
-  <div class="chassis">
-    <div class="top-bar">
-      <div class="brand-block">
-        <div class="id-line">HYK-LAB / SER. WN‑01R</div>
-        <div class="unit-name">
-          <span class="code">NIHEI</span> NOISE FORGE
-        </div>
-        <div class="small-tag">BAND‑LIMITED RANDOM EXCITATION UNIT</div>
-      </div>
-      <div class="stamp">
-        BUILD <strong>2066‑Q1</strong><br/>
-        ZONE‑TOKYO / BLOCK‑MINATO
-      </div>
-    </div>
+  <svg id="panel" width="480" height="260" viewBox="0 0 480 260">
+    <!-- 背景パネル（内側に少し余白を取る） -->
+    <rect x="10" y="10" width="460" height="240" rx="4"
+          fill="#050608" stroke="#3c4148" stroke-width="1"/>
 
-    <div class="panel-main">
-      <div class="grid">
-        <div class="block">
-          <div class="block-label">
-            <span>LIVE OUTPUT</span>
-            <span class="right">BUS A / MONO</span>
-          </div>
-          <button id="powerBtn" class="btn btn-main" type="button">
-            <div class="btn-left">
-              <div id="powerLed" class="led-ring" aria-hidden="true"></div>
-              <span>ENGAGE / SHUTDOWN</span>
-            </div>
-            <span class="btn-right">HOLD TO AUDITION</span>
-          </button>
+    <!-- 上部ラベルバー -->
+    <rect x="10" y="10" width="460" height="32" fill="#0b0e12"/>
+    <text x="26" y="32" fill="#e5e7eb"
+          font-size="12" letter-spacing="0.18em">
+      WN-01 // NOISE UNIT
+    </text>
+    <!-- 右上テキストは少し左に詰めてフォント小さく -->
+    <text x="260" y="31" fill="#6b7280"
+          font-size="9" letter-spacing="0.16em">
+      CITY LAYER 13 : CHANNEL 07
+    </text>
 
-          <div class="slider-block">
-            <div class="slider-label">
-              <span>GRAIN DENSITY</span>
-              <span id="densityVal" class="slider-value">0.50</span>
-            </div>
-            <input
-              id="densitySlider"
-              class="slider"
-              type="range"
-              min="0"
-              max="1"
-              step="0.01"
-              value="0.5"
-            />
-          </div>
-        </div>
+    <!-- 左側モニタ -->
+    <rect x="26" y="56" width="190" height="176" rx="2"
+          fill="#050608" stroke="#2f353c" stroke-width="1"/>
+    <g stroke="#111827" stroke-width="0.5">
+      <line x1="26" y1="88" x2="216" y2="88"/>
+      <line x1="26" y1="120" x2="216" y2="120"/>
+      <line x1="26" y1="152" x2="216" y2="152"/>
+      <line x1="26" y1="184" x2="216" y2="184"/>
+    </g>
+    <text x="34" y="80" fill="#9ca3af" font-size="9"
+          letter-spacing="0.18em">
+      WHITE NOISE / SPECTRUM
+    </text>
+    <text id="statusText" x="34" y="112" fill="#4b5563" font-size="8"
+          letter-spacing="0.14em">
+      LOW 0.0 dB / MID 0.0 dB / HIGH -3.0 dB
+    </text>
+    <text x="34" y="205" fill="#374151" font-size="7"
+          letter-spacing="0.2em">
+      SIG-ROUTE : INTERNAL
+    </text>
 
-        <div class="block">
-          <div class="block-label">
-            <span>WAV RENDER</span>
-            <span class="right">30s / 44.1k / 16bit</span>
-          </div>
-          <button id="recBtn" class="btn btn-rec" type="button">
-            <div class="btn-left">
-              <div class="led-rec" aria-hidden="true"></div>
-              <span>COMPILE 30s SEGMENT</span>
-            </div>
-            <span class="btn-right">EXPORT .WAV</span>
-          </button>
-          <div id="status" class="status">
-            1) AUDITION WITH LIVE OUTPUT · 2) COMPILE 30s WAV FOR LOOPING.
-          </div>
-          <div id="download" class="download"></div>
-        </div>
-      </div>
+    <!-- ノブエリアライン（少し内側に） -->
+    <line x1="248" y1="88" x2="454" y2="88"
+          stroke="#1f2933" stroke-width="1"/>
 
-      <div class="divider"></div>
+    <!-- LOW ノブ -->
+    <g id="knob-low" transform="translate(278, 140)" cursor="pointer">
+      <circle r="34" fill="#050608" stroke="#374151" stroke-width="1.2"/>
+      <circle r="22" fill="#0b0e12" stroke="#111827" stroke-width="1"/>
+      <line id="low-pointer" x1="0" y1="-22" x2="0" y2="-32"
+            stroke="#e5e7eb" stroke-width="1.4" stroke-linecap="round"/>
+      <g stroke="#4b5563" stroke-width="0.6">
+        <line x1="-26" y1="0" x2="-30" y2="0"/>
+        <line x1="26" y1="0" x2="30" y2="0"/>
+        <line x1="0" y1="26" x2="0" y2="30"/>
+      </g>
+      <text x="0" y="50" fill="#9ca3af" font-size="9"
+            text-anchor="middle" letter-spacing="0.16em">
+        LOW
+      </text>
+      <text x="0" y="62" fill="#4b5563" font-size="7"
+            text-anchor="middle" letter-spacing="0.18em">
+        SHELF
+      </text>
+    </g>
 
-      <div class="warning-strip">
-        // CAUTION // LONG‑PRESS WAV LINK ON IOS SAFARI → “DOWNLOAD” //
-      </div>
-    </div>
+    <!-- MID ノブ -->
+    <g id="knob-mid" transform="translate(358, 140)" cursor="pointer">
+      <circle r="34" fill="#050608" stroke="#374151" stroke-width="1.2"/>
+      <circle r="22" fill="#0b0e12" stroke="#111827" stroke-width="1"/>
+      <line id="mid-pointer" x1="0" y1="-22" x2="0" y2="-32"
+            stroke="#e5e7eb" stroke-width="1.4" stroke-linecap="round"/>
+      <g stroke="#4b5563" stroke-width="0.6">
+        <line x1="-26" y1="0" x2="-30" y2="0"/>
+        <line x1="26" y1="0" x2="30" y2="0"/>
+        <line x1="0" y1="26" x2="0" y2="30"/>
+      </g>
+      <text x="0" y="50" fill="#9ca3af" font-size="9"
+            text-anchor="middle" letter-spacing="0.16em">
+        MID
+      </text>
+      <text x="0" y="62" fill="#4b5563" font-size="7"
+            text-anchor="middle" letter-spacing="0.18em">
+        PEAK
+      </text>
+    </g>
 
-    <div class="footer">
-      OUTPUT IS INTENDED FOR BACKGROUND LOOPING · NO WARRANTY IMPLIED
-    </div>
-  </div>
+    <!-- HIGH ノブ -->
+    <g id="knob-high" transform="translate(438, 140)" cursor="pointer">
+      <circle r="34" fill="#050608" stroke="#374151" stroke-width="1.2"/>
+      <circle r="22" fill="#0b0e12" stroke="#111827" stroke-width="1"/>
+      <line id="high-pointer" x1="0" y1="-22" x2="0" y2="-32"
+            stroke="#e5e7eb" stroke-width="1.4" stroke-linecap="round"/>
+      <g stroke="#4b5563" stroke-width="0.6">
+        <line x1="-26" y1="0" x2="-30" y2="0"/>
+        <line x1="26" y1="0" x2="30" y2="0"/>
+        <line x1="0" y1="26" x2="0" y2="30"/>
+      </g>
+      <text x="0" y="50" fill="#9ca3af" font-size="9"
+            text-anchor="middle" letter-spacing="0.16em">
+        HIGH
+      </text>
+      <text x="0" y="62" fill="#4b5563" font-size="7"
+            text-anchor="middle" letter-spacing="0.18em">
+        SHELF
+      </text>
+    </g>
+
+    <!-- PLAY / STORE パネル（右側ギリギリを避けて少し左に） -->
+    <rect id="btn-play" x="248" y="190" width="98" height="42" rx="2"
+          fill="#050608" stroke="#2f353c" stroke-width="1" cursor="pointer"/>
+    <text id="btn-play-label" x="297" y="214" fill="#9ca3af" font-size="9"
+          text-anchor="middle" letter-spacing="0.18em" cursor="pointer">
+      PLAY
+    </text>
+
+    <rect id="btn-save" x="360" y="190" width="98" height="42" rx="2"
+          fill="#050608" stroke="#2f353c" stroke-width="1" cursor="pointer"/>
+    <text x="409" y="214" fill="#6b7280" font-size="9"
+          text-anchor="middle" letter-spacing="0.18em" cursor="pointer">
+      STORE
+    </text>
+  </svg>
+
+  <div class="hint">3つのノブをドラッグで回転（LOW/MID/HIGH）、PLAYパネルで再生/停止</div>
 
   <script>
-    let audioCtx = null;
-    let liveNoiseNode = null;
-    let liveFilterNode = null;
+    // ===== オーディオ =====
+    const sampleRate = 44100;
+    const durationSeconds = 600;
 
-    const powerBtn = document.getElementById("powerBtn");
-    const powerLed = document.getElementById("powerLed");
-    const recBtn = document.getElementById("recBtn");
-    const densitySlider = document.getElementById("densitySlider");
-    const densityVal = document.getElementById("densityVal");
-    const statusEl = document.getElementById("status");
-    const downloadEl = document.getElementById("download");
+    let audioCtx;
+    let buffer;
+    let source;
+    let lowFilter, midFilter, highFilter;
 
-    const RENDER_SECONDS = 30; // ここを10〜40くらいに変えれば長さ変更可
+    let lowGainDb  = 0;
+    let midGainDb  = 0;
+    let highGainDb = -3;
 
-    function ensureAudioContext() {
+    const mix = 0.05;
+    const hpAmount = 0.995;
+
+    function ensureAudioCtx() {
       if (!audioCtx) {
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       }
-      if (audioCtx.state === "suspended") {
-        audioCtx.resume();
-      }
     }
 
-    function createNoiseBuffer(ctx, seconds, density) {
-      const sampleRate = ctx.sampleRate;
-      const length = sampleRate * seconds;
-      const buffer = ctx.createBuffer(1, length, sampleRate);
+    function createNoiseBuffer() {
+      ensureAudioCtx();
+      buffer = audioCtx.createBuffer(1, sampleRate * durationSeconds, sampleRate);
       const data = buffer.getChannelData(0);
 
-      const threshold = density;
-      for (let i = 0; i < length; i++) {
-        const r = Math.random();
-        if (r < threshold) {
-          const v = (Math.random() * 2 - 1) * 0.8;
-          data[i] = v;
-        } else {
-          data[i] = 0;
-        }
-      }
-      return buffer;
-    }
-
-    function startLiveNoise() {
-      ensureAudioContext();
-      const density = parseFloat(densitySlider.value);
-
-      const src = audioCtx.createBufferSource();
-      src.buffer = createNoiseBuffer(audioCtx, 2, density);
-      src.loop = true;
-
-      const filter = audioCtx.createBiquadFilter();
-      filter.type = "bandpass";
-      filter.frequency.value = 600;
-      filter.Q.value = 0.6;
-
-      const gain = audioCtx.createGain();
-      gain.gain.value = 0.22;
-
-      src.connect(filter);
-      filter.connect(gain);
-      gain.connect(audioCtx.destination);
-
-      src.start();
-
-      liveNoiseNode = src;
-      liveFilterNode = filter;
-
-      powerBtn.classList.add("active");
-      powerLed.classList.add("on");
-      statusEl.textContent = "LIVE OUTPUT ONLINE · ADJUST GRAIN DENSITY BEFORE COMPILING WAV.";
-    }
-
-    function stopLiveNoise() {
-      if (liveNoiseNode) {
-        try { liveNoiseNode.stop(); } catch (e) {}
-        liveNoiseNode.disconnect();
-        liveNoiseNode = null;
-      }
-      if (liveFilterNode) {
-        liveFilterNode.disconnect();
-        liveFilterNode = null;
-      }
-      powerBtn.classList.remove("active");
-      powerLed.classList.remove("on");
-      statusEl.textContent = "LIVE OUTPUT OFFLINE · READY TO COMPILE OR RE‑TUNE.";
-    }
-
-    function toggleLiveNoise() {
-      if (liveNoiseNode) {
-        stopLiveNoise();
-      } else {
-        startLiveNoise();
+      let prev = 0;
+      for (let i = 0; i < data.length; i++) {
+        let rnd = Math.random() * 2 - 1;
+        rnd = rnd * (1.0 - mix) + prev * mix;
+        const hp = rnd - prev * hpAmount;
+        data[i] = hp * 0.7;
+        prev = rnd;
       }
     }
 
-    function updateDensityLabel() {
-      const d = parseFloat(densitySlider.value);
-      densityVal.textContent = d.toFixed(2);
-      if (liveNoiseNode && audioCtx) {
-        const buf = createNoiseBuffer(audioCtx, 2, d);
-        liveNoiseNode.buffer = buf;
-        statusEl.textContent = "GRAIN DENSITY UPDATED · VERIFY TEXTURE THEN COMPILE 30s SEGMENT.";
-      }
+    function updateStatusText() {
+      const status = document.getElementById('statusText');
+      status.textContent =
+        `LOW ${lowGainDb.toFixed(1)} dB / MID ${midGainDb.toFixed(1)} dB / HIGH ${highGainDb.toFixed(1)} dB`;
     }
 
-    densitySlider.addEventListener("input", updateDensityLabel);
+    function playNoise() {
+      if (!audioCtx || !buffer) createNoiseBuffer();
+      stopNoise();
 
-    powerBtn.addEventListener("pointerdown", (ev) => {
-      ev.preventDefault();
-      toggleLiveNoise();
-    });
+      source = audioCtx.createBufferSource();
+      source.buffer = buffer;
+      source.loop = true;
 
-    document.addEventListener("visibilitychange", () => {
-      if (document.hidden) {
-        stopLiveNoise();
+      lowFilter = audioCtx.createBiquadFilter();
+      lowFilter.type = 'lowshelf';
+      lowFilter.frequency.value = 200;
+      lowFilter.gain.value = lowGainDb;
+
+      midFilter = audioCtx.createBiquadFilter();
+      midFilter.type  = 'peaking';
+      midFilter.frequency.value = 1000;
+      midFilter.Q.value = 1.0;
+      midFilter.gain.value = midGainDb;
+
+      highFilter = audioCtx.createBiquadFilter();
+      highFilter.type = 'highshelf';
+      highFilter.frequency.value = 6000;
+      highFilter.gain.value = highGainDb;
+
+      source.connect(lowFilter);
+      lowFilter.connect(midFilter);
+      midFilter.connect(highFilter);
+      highFilter.connect(audioCtx.destination);
+
+      source.start();
+      document.getElementById('btn-play-label').textContent = 'STOP';
+    }
+
+    function stopNoise() {
+      if (source) {
+        try { source.stop(); } catch (e) {}
+        source.disconnect();
+        source = null;
       }
-    });
+      [lowFilter, midFilter, highFilter].forEach(f => {
+        if (f) f.disconnect();
+      });
+      lowFilter = midFilter = highFilter = null;
+      document.getElementById('btn-play-label').textContent = 'PLAY';
+    }
 
+    // WAV保存まわり（元コードそのまま）
     function audioBufferToWav(abuffer) {
       const numOfChan = abuffer.numberOfChannels;
       const length = abuffer.length * numOfChan * 2 + 44;
       const buffer = new ArrayBuffer(length);
       const view = new DataView(buffer);
-
+      const channels = [];
+      let offset = 0;
       let pos = 0;
 
-      function setUint16(data) {
-        view.setUint16(pos, data, true);
-        pos += 2;
-      }
-
-      function setUint32(data) {
-        view.setUint32(pos, data, true);
-        pos += 4;
-      }
+      function setUint16(data) { view.setUint16(pos, data, true); pos += 2; }
+      function setUint32(data) { view.setUint32(pos, data, true); pos += 4; }
 
       setUint32(0x46464952);
       setUint32(length - 8);
@@ -656,94 +273,150 @@
       setUint16(1);
       setUint16(numOfChan);
       setUint32(abuffer.sampleRate);
-      setUint32(abuffer.sampleRate * 2 * numOfChan);
+      setUint32(abuffer.sampleRate * numOfChan * 2);
       setUint16(numOfChan * 2);
       setUint16(16);
 
       setUint32(0x61746164);
       setUint32(length - pos - 4);
 
-      const channels = [];
       for (let i = 0; i < numOfChan; i++) {
         channels.push(abuffer.getChannelData(i));
       }
 
-      let index = 0;
-      const total = abuffer.length;
-      while (index < total) {
-        for (let ch = 0; ch < numOfChan; ch++) {
-          let sample = channels[ch][index];
-          sample = Math.max(-1, Math.min(1, sample));
-          sample = sample < 0 ? sample * 0x8000 : sample * 0x7fff;
-          view.setInt16(pos, sample, true);
+      while (pos < length) {
+        for (let i = 0; i < numOfChan; i++) {
+          let sample = channels[i][offset] * 0.9;
+          sample = sample < -1 ? -1 : sample > 1 ? 1 : sample;
+          view.setInt16(pos, sample * 0x7fff, true);
           pos += 2;
         }
-        index++;
+        offset++;
       }
-
       return buffer;
     }
 
-    async function renderWav() {
-      downloadEl.innerHTML = "";
-      ensureAudioContext();
-      stopLiveNoise();
+    function saveWav() {
+      if (!audioCtx || !buffer) createNoiseBuffer();
+      const wavBuffer = audioBufferToWav(buffer);
+      const blob = new Blob([wavBuffer], { type: 'audio/wav' });
+      const url = URL.createObjectURL(blob);
 
-      const density = parseFloat(densitySlider.value);
-      const sr = audioCtx.sampleRate;
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'my_white_noise.wav';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
 
-      statusEl.textContent =
-        `COMPILING ${RENDER_SECONDS}s SEGMENT @ ${sr}Hz · STAND BY…`;
-      recBtn.disabled = true;
+    // ===== ノブ操作共通ロジック =====
+    const panel = document.getElementById('panel');
 
-      const offline = new OfflineAudioContext(1, sr * RENDER_SECONDS, sr);
+    const knobLow     = document.getElementById('knob-low');
+    const knobMid     = document.getElementById('knob-mid');
+    const knobHigh    = document.getElementById('knob-high');
+    const lowPointer  = document.getElementById('low-pointer');
+    const midPointer  = document.getElementById('mid-pointer');
+    const highPointer = document.getElementById('high-pointer');
 
-      const src = offline.createBufferSource();
-      src.buffer = createNoiseBuffer(offline, RENDER_SECONDS, density);
-      src.loop = false;
+    let isDragging = null;
 
-      const filter = offline.createBiquadFilter();
-      filter.type = "bandpass";
-      filter.frequency.value = 600;
-      filter.Q.value = 0.6;
+    function angleToGain(angleDeg) {
+      const t = angleDeg / 135;
+      return t * 6;
+    }
 
-      const gain = offline.createGain();
-      gain.gain.value = 0.22;
+    function gainToAngle(db) {
+      const t = db / 6;
+      return t * 135;
+    }
 
-      src.connect(filter);
-      filter.connect(gain);
-      gain.connect(offline.destination);
+    let lowAngle  = 0;
+    let midAngle  = 0;
+    let highAngle = 0;
 
-      src.start(0);
+    function setKnob(pointerElem, which, angleDeg) {
+      const clamped = Math.max(-135, Math.min(135, angleDeg));
+      const rad = clamped * Math.PI / 180;
+      const x  = Math.sin(rad) * 22;
+      const y  = -Math.cos(rad) * 22;
+      const x2 = Math.sin(rad) * 32;
+      const y2 = -Math.cos(rad) * 32;
+      pointerElem.setAttribute('x1', x);
+      pointerElem.setAttribute('y1', y);
+      pointerElem.setAttribute('x2', x2);
+      pointerElem.setAttribute('y2', y2);
 
-      try {
-        const rendered = await offline.startRendering();
-        const wavBuffer = audioBufferToWav(rendered);
-        const blob = new Blob([wavBuffer], { type: "audio/wav" });
-        const url = URL.createObjectURL(blob);
+      const gain = angleToGain(clamped);
 
-        const ts = new Date().toISOString().replace(/[:.]/g, "-");
-        const filename = `wn01r_noise_${RENDER_SECONDS}s_${ts}.wav`;
+      if (which === 'low') {
+        lowAngle = clamped;
+        lowGainDb = gain;
+        if (lowFilter) lowFilter.gain.value = lowGainDb;
+      } else if (which === 'mid') {
+        midAngle = clamped;
+        midGainDb = gain;
+        if (midFilter) midFilter.gain.value = midGainDb;
+      } else if (which === 'high') {
+        highAngle = clamped;
+        highGainDb = gain;
+        if (highFilter) highFilter.gain.value = highGainDb;
+      }
+      updateStatusText();
+    }
 
-        downloadEl.innerHTML =
-          `<a href="${url}" download="${filename}">${filename}</a>`;
-        statusEl.textContent =
-          "COMPILE COMPLETE · LONG‑PRESS FILENAME TO DOWNLOAD AND LOOP IN NATIVE PLAYER.";
-      } catch (err) {
-        console.error(err);
-        statusEl.textContent =
-          "COMPILE ERROR · RELOAD BROWSER OR REDUCE RENDER LENGTH.";
-      } finally {
-        recBtn.disabled = false;
+    lowGainDb  = 0;
+    midGainDb  = 0;
+    highGainDb = -3;
+
+    setKnob(lowPointer,  'low',  gainToAngle(lowGainDb));
+    setKnob(midPointer,  'mid',  gainToAngle(midGainDb));
+    setKnob(highPointer, 'high', gainToAngle(highGainDb));
+
+    function handleMouseMove(e) {
+      if (!isDragging) return;
+      const rect = panel.getBoundingClientRect();
+
+      let cx, cy;
+      if (isDragging === 'low') {
+        cx = rect.left + 278;
+        cy = rect.top + 140;
+      } else if (isDragging === 'mid') {
+        cx = rect.left + 358;
+        cy = rect.top + 140;
+      } else if (isDragging === 'high') {
+        cx = rect.left + 438;
+        cy = rect.top + 140;
+      }
+      const dx = e.clientX - cx;
+      const dy = e.clientY - cy;
+      const angle = Math.atan2(dx, -dy) * 180 / Math.PI;
+
+      if (isDragging === 'low') {
+        setKnob(lowPointer, 'low', angle);
+      } else if (isDragging === 'mid') {
+        setKnob(midPointer, 'mid', angle);
+      } else if (isDragging === 'high') {
+        setKnob(highPointer, 'high', angle);
       }
     }
 
-    recBtn.addEventListener("pointerdown", (ev) => {
-      ev.preventDefault();
-      renderWav();
-    });
+    knobLow.addEventListener('mousedown', () => { isDragging = 'low'; });
+    knobMid.addEventListener('mousedown', () => { isDragging = 'mid'; });
+    knobHigh.addEventListener('mousedown', () => { isDragging = 'high'; });
 
-    updateDensityLabel();
+    window.addEventListener('mouseup', () => { isDragging = null; });
+    window.addEventListener('mousemove', handleMouseMove);
+
+    document.getElementById('btn-play').addEventListener('click', () => {
+      if (source) stopNoise(); else playNoise();
+    });
+    document.getElementById('btn-play-label').addEventListener('click', () => {
+      if (source) stopNoise(); else playNoise();
+    });
+    document.getElementById('btn-save').addEventListener('click', saveWav);
   </script>
 </body>
 </html>
