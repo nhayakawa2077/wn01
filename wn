@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>WN-01 Noise Unit</title>
+  <style>
+    body {
+      margin: 0;
+      background: #050608;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #e5e7eb;
+    }
+    .hint {
+      position: fixed;
+      bottom: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 11px;
+      color: #6b7280;
+      letter-spacing: 0.12em;
+    }
+  </style>
+</head>
+<body>
+  <svg id="panel" width="480" height="260" viewBox="0 0 480 260">
+    <!-- 背景パネル -->
+    <rect x="8" y="8" width="464" height="244" rx="4"
+          fill="#050608" stroke="#3c4148" stroke-width="1"/>
+
+    <!-- 上部ラベルバー -->
+    <rect x="8" y="8" width="464" height="32" fill="#0b0e12"/>
+    <text x="24" y="30" fill="#e5e7eb"
+          font-size="12" letter-spacing="0.18em">
+      WN-01 // NOISE UNIT
+    </text>
+    <text x="320" y="30" fill="#6b7280"
+          font-size="10" letter-spacing="0.16em">
+      CITY LAYER 13 : CHANNEL 07
+    </text>
+
+    <!-- 左側モニタ -->
+    <rect x="24" y="56" width="190" height="176" rx="2"
+          fill="#050608" stroke="#2f353c" stroke-width="1"/>
+    <g stroke="#111827" stroke-width="0.5">
+      <line x1="24" y1="88" x2="214" y2="88"/>
+      <line x1="24" y1="120" x2="214" y2="120"/>
+      <line x1="24" y1="152" x2="214" y2="152"/>
+      <line x1="24" y1="184" x2="214" y2="184"/>
+    </g>
+    <text x="32" y="80" fill="#9ca3af" font-size="9"
+          letter-spacing="0.18em">
+      WHITE NOISE / SPECTRUM
+    </text>
+    <text id="statusText" x="32" y="112" fill="#4b5563" font-size="8"
+          letter-spacing="0.14em">
+      LOW 0.0 dB / MID 0.0 dB / HIGH -3.0 dB
+    </text>
+    <text x="32" y="205" fill="#374151" font-size="7"
+          letter-spacing="0.2em">
+      SIG-ROUTE : INTERNAL
+    </text>
+
+    <!-- ノブエリア -->
+    <line x1="250" y1="88" x2="456" y2="88"
+          stroke="#1f2933" stroke-width="1"/>
+
+    <!-- LOW ノブ -->
+    <g id="knob-low" transform="translate(280, 140)" cursor="pointer">
+      <circle r="34" fill="#050608" stroke="#374151" stroke-width="1.2"/>
+      <circle r="22" fill="#0b0e12" stroke="#111827" stroke-width="1"/>
+      <line id="low-pointer" x1="0" y1="-22" x2="0" y2="-32"
+            stroke="#e5e7eb" stroke-width="1.4" stroke-linecap="round"/>
+      <g stroke="#4b5563" stroke-width="0.6">
+        <line x1="-26" y1="0" x2="-30" y2="0"/>
+        <line x1="26" y1="0" x2="30" y2="0"/>
+        <line x1="0" y1="26" x2="0" y2="30"/>
+      </g>
+      <text x="0" y="50" fill="#9ca3af" font-size="9"
+            text-anchor="middle" letter-spacing="0.16em">
+        LOW
+      </text>
+      <text x="0" y="62" fill="#4b5563" font-size="7"
+            text-anchor="middle" letter-spacing="0.18em">
+        SHELF
+      </text>
+    </g>
+
+    <!-- MID ノブ -->
+    <g id="knob-mid" transform="translate(360, 140)" cursor="pointer">
+      <circle r="34" fill="#050608" stroke="#374151" stroke-width="1.2"/>
+      <circle r="22" fill="#0b0e12" stroke="#111827" stroke-width="1"/>
+      <line id="mid-pointer" x1="0" y1="-22" x2="0" y2="-32"
+            stroke="#e5e7eb" stroke-width="1.4" stroke-linecap="round"/>
+      <g stroke="#4b5563" stroke-width="0.6">
+        <line x1="-26" y1="0" x2="-30" y2="0"/>
+        <line x1="26" y1="0" x2="30" y2="0"/>
+        <line x1="0" y1="26" x2="0" y2="30"/>
+      </g>
+      <text x="0" y="50" fill="#9ca3af" font-size="9"
+            text-anchor="middle" letter-spacing="0.16em">
+        MID
+      </text>
+      <text x="0" y="62" fill="#4b5563" font-size="7"
+            text-anchor="middle" letter-spacing="0.18em">
+        PEAK
+      </text>
+    </g>
+
+    <!-- HIGH ノブ -->
+    <g id="knob-high" transform="translate(440, 140)" cursor="pointer">
+      <circle r="34" fill="#050608" stroke="#374151" stroke-width="1.2"/>
+      <circle r="22" fill="#0b0e12" stroke="#111827" stroke-width="1"/>
+      <line id="high-pointer" x1="0" y1="-22" x2="0" y2="-32"
+            stroke="#e5e7eb" stroke-width="1.4" stroke-linecap="round"/>
+      <g stroke="#4b5563" stroke-width="0.6">
+        <line x1="-26" y1="0" x2="-30" y2="0"/>
+        <line x1="26" y1="0" x2="30" y2="0"/>
+        <line x1="0" y1="26" x2="0" y2="30"/>
+      </g>
+      <text x="0" y="50" fill="#9ca3af" font-size="9"
+            text-anchor="middle" letter-spacing="0.16em">
+        HIGH
+      </text>
+      <text x="0" y="62" fill="#4b5563" font-size="7"
+            text-anchor="middle" letter-spacing="0.18em">
+        SHELF
+      </text>
+    </g>
+
+    <!-- PLAY / STORE パネル -->
+    <rect id="btn-play" x="250" y="190" width="96" height="42" rx="2"
+          fill="#050608" stroke="#2f353c" stroke-width="1" cursor="pointer"/>
+    <text id="btn-play-label" x="298" y="214" fill="#9ca3af" font-size="9"
+          text-anchor="middle" letter-spacing="0.18em" cursor="pointer">
+      PLAY
+    </text>
+
+    <rect id="btn-save" x="360" y="190" width="96" height="42" rx="2"
+          fill="#050608" stroke="#2f353c" stroke-width="1" cursor="pointer"/>
+    <text x="408" y="214" fill="#6b7280" font-size="9"
+          text-anchor="middle" letter-spacing="0.18em" cursor="pointer">
+      STORE
+    </text>
+  </svg>
+
+  <div class="hint">3つのノブをドラッグで回転（LOW/MID/HIGH）、PLAYパネルで再生/停止</div>
+
+  <script>
+    // ===== オーディオ =====
+    const sampleRate = 44100;
+    const durationSeconds = 600;
+
+    let audioCtx;
+    let buffer;
+    let source;
+    let lowFilter, midFilter, highFilter;
+
+    let lowGainDb  = 0;
+    let midGainDb  = 0;
+    let highGainDb = -3;
+
+    const mix = 0.05;
+    const hpAmount = 0.995;
+
+    function createNoiseBuffer() {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      buffer = audioCtx.createBuffer(1, sampleRate * durationSeconds, sampleRate);
+      const data = buffer.getChannelData(0);
+
+      let prev = 0;
+      for (let i = 0; i < data.length; i++) {
+        let rnd = Math.random() * 2 - 1;
+        rnd = rnd * (1.0 - mix) + prev * mix;
+        const hp = rnd - prev * hpAmount;
+        data[i] = hp * 0.7;
+        prev = rnd;
+      }
+    }
+
+    function updateStatusText() {
+      const status = document.getElementById('statusText');
+      status.textContent =
+        `LOW ${lowGainDb.toFixed(1)} dB / MID ${midGainDb.toFixed(1)} dB / HIGH ${highGainDb.toFixed(1)} dB`;
+    }
+
+    function playNoise() {
+      if (!audioCtx || !buffer) createNoiseBuffer();
+      stopNoise();
+
+      source = audioCtx.createBufferSource();
+      source.buffer = buffer;
+      source.loop = true;
+
+      lowFilter = audioCtx.createBiquadFilter();
+      lowFilter.type = 'lowshelf';
+      lowFilter.frequency.value = 200;
+      lowFilter.gain.value = lowGainDb;
+
+      midFilter = audioCtx.createBiquadFilter();
+      midFilter.type  = 'peaking';
+      midFilter.frequency.value = 1000;
+      midFilter.Q.value = 1.0;
+      midFilter.gain.value = midGainDb;
+
+      highFilter = audioCtx.createBiquadFilter();
+      highFilter.type = 'highshelf';
+      highFilter.frequency.value = 6000;
+      highFilter.gain.value = highGainDb;
+
+      source.connect(lowFilter);
+      lowFilter.connect(midFilter);
+      midFilter.connect(highFilter);
+      highFilter.connect(audioCtx.destination);
+
+      source.start();
+      document.getElementById('btn-play-label').textContent = 'STOP';
+    }
+
+    function stopNoise() {
+      if (source) {
+        try { source.stop(); } catch (e) {}
+        source.disconnect();
+        source = null;
+      }
+      [lowFilter, midFilter, highFilter].forEach(f => {
+        if (f) f && f.disconnect();
+      });
+      lowFilter = midFilter = highFilter = null;
+      document.getElementById('btn-play-label').textContent = 'PLAY';
+    }
+
+    function audioBufferToWav(abuffer) {
+      const numOfChan = abuffer.numberOfChannels;
+      const length = abuffer.length * numOfChan * 2 + 44;
+      const buffer = new ArrayBuffer(length);
+      const view = new DataView(buffer);
+      const channels = [];
+      let offset = 0;
+      let pos = 0;
+
+      function setUint16(data) { view.setUint16(pos, data, true); pos += 2; }
+      function setUint32(data) { view.setUint32(pos, data, true); pos += 4; }
+
+      setUint32(0x46464952);
+      setUint32(length - 8);
+      setUint32(0x45564157);
+
+      setUint32(0x20746d66);
+      setUint32(16);
+      setUint16(1);
+      setUint16(numOfChan);
+      setUint32(abuffer.sampleRate);
+      setUint32(abuffer.sampleRate * numOfChan * 2);
+      setUint16(numOfChan * 2);
+      setUint16(16);
+
+      setUint32(0x61746164);
+      setUint32(length - pos - 4);
+
+      for (let i = 0; i < numOfChan; i++) {
+        channels.push(abuffer.getChannelData(i));
+      }
+
+      while (pos < length) {
+        for (let i = 0; i < numOfChan; i++) {
+          let sample = channels[i][offset] * 0.9;
+          sample = sample < -1 ? -1 : sample > 1 ? 1 : sample;
+          view.setInt16(pos, sample * 0x7fff, true);
+          pos += 2;
+        }
+        offset++;
+      }
+      return buffer;
+    }
+
+    function saveWav() {
+      if (!audioCtx || !buffer) createNoiseBuffer();
+      const wavBuffer = audioBufferToWav(buffer);
+      const blob = new Blob([wavBuffer], { type: 'audio/wav' });
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'my_white_noise.wav';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    // ===== ノブ操作共通ロジック =====
+    const panel = document.getElementById('panel');
+
+    const knobLow      = document.getElementById('knob-low');
+    const knobMid      = document.getElementById('knob-mid');
+    const knobHigh     = document.getElementById('knob-high');
+    const lowPointer   = document.getElementById('low-pointer');
+    const midPointer   = document.getElementById('mid-pointer');
+    const highPointer  = document.getElementById('high-pointer');
+
+    let isDragging = null; // 'low' | 'mid' | 'high' | null
+    let lowAngle  = 0;
+    let midAngle  = 0;
+    let highAngle = -20; // ちょい暗めにするため初期で少しカット
+
+    function angleToGain(angleDeg) {
+      const t = angleDeg / 135;      // -1〜+1
+      return t * 12;                 // -12〜+12dB
+    }
+
+    function setKnob(pointerElem, which, angleDeg) {
+      const clamped = Math.max(-135, Math.min(135, angleDeg));
+      const rad = clamped * Math.PI / 180;
+      const x  = Math.sin(rad) * 22;
+      const y  = -Math.cos(rad) * 22;
+      const x2 = Math.sin(rad) * 32;
+      const y2 = -Math.cos(rad) * 32;
+      pointerElem.setAttribute('x1', x);
+      pointerElem.setAttribute('y1', y);
+      pointerElem.setAttribute('x2', x2);
+      pointerElem.setAttribute('y2', y2);
+
+      const gain = angleToGain(clamped);
+
+      if (which === 'low') {
+        lowAngle = clamped;
+        lowGainDb = gain;
+        if (lowFilter) lowFilter.gain.value = lowGainDb;
+      } else if (which === 'mid') {
+        midAngle = clamped;
+        midGainDb = gain;
+        if (midFilter) midFilter.gain.value = midGainDb;
+      } else if (which === 'high') {
+        highAngle = clamped;
+        highGainDb = gain;
+        if (highFilter) highFilter.gain.value = highGainDb;
+      }
+      updateStatusText();
+    }
+
+    function handleMouseMove(e) {
+      if (!isDragging) return;
+      const rect = panel.getBoundingClientRect();
+
+      let cx, cy;
+      if (isDragging === 'low') {
+        cx = rect.left + 280;
+        cy = rect.top + 140;
+      } else if (isDragging === 'mid') {
+        cx = rect.left + 360;
+        cy = rect.top + 140;
+      } else if (isDragging === 'high') {
+        cx = rect.left + 440;
+        cy = rect.top + 140;
+      }
+      const dx = e.clientX - cx;
+      const dy = e.clientY - cy;
+      const angle = Math.atan2(dx, -dy) * 180 / Math.PI;
+
+      if (isDragging === 'low') {
+        setKnob(lowPointer, 'low', angle);
+      } else if (isDragging === 'mid') {
+        setKnob(midPointer, 'mid', angle);
+      } else if (isDragging === 'high') {
+        setKnob(highPointer, 'high', angle);
+      }
+    }
+
+    knobLow.addEventListener('mousedown', () => { isDragging = 'low'; });
+    knobMid.addEventListener('mousedown', () => { isDragging = 'mid'; });
+    knobHigh.addEventListener('mousedown', () => { isDragging = 'high'; });
+
+    window.addEventListener('mouseup', () => { isDragging = null; });
+    window.addEventListener('mousemove', handleMouseMove);
+
+    // 初期ノブ位置セット
+    setKnob(lowPointer,  'low',  0);
+    setKnob(midPointer,  'mid',  0);
+    setKnob(highPointer, 'high', highAngle);
+
+    // PLAY / SAVE
+    document.getElementById('btn-play').addEventListener('click', () => {
+      if (source) stopNoise(); else playNoise();
+    });
+    document.getElementById('btn-play-label').addEventListener('click', () => {
+      if (source) stopNoise(); else playNoise();
+    });
+    document.getElementById('btn-save').addEventListener('click', saveWav);
+  </script>
+</body>
+</html>
